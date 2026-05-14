@@ -1,747 +1,796 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dhwani SDLC — Stage A: Requirement Gathering</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Dhwani SDLC Stage A — Requirement Gathering. Part 1 of 3.">
+<link rel="icon" type="image/svg+xml" href="https://prody-dris.github.io/ai-playground-sessions/assets/logo.svg">
+<meta property="og:site_name" content="Dhwani SDLC — AI-Native Pitches">
+<meta property="og:title" content="SDLC Stage A — Requirement Gathering">
+<meta property="og:description" content="Intent → Solutioning → TRD. 10 steps × tool × skill. Four-stack overlay.">
+<meta property="og:type" content="article">
+<title>SDLC Stage A — Requirement Gathering · Part 1 of 3</title>
+<link rel="stylesheet" href="https://prody-dris.github.io/ai-playground-sessions/assets/style.css?v=7">
 <style>
-  :root {
-    --bg: #0a0a0a;
-    --fg: #f5f5f4;
-    --muted: #a1a1aa;
-    --line: #27272a;
-    --accent: #ff6b35;
-    --accent-soft: rgba(255, 107, 53, 0.12);
-    --card: #141414;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; }
-  body {
-    background: var(--bg);
-    color: var(--fg);
-    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", system-ui, sans-serif;
-    font-weight: 400;
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
-  }
+  /* Slide-deck overlay on top of AI Playground brand */
+  html, body { overflow: hidden; height: 100%; }
+  body { padding-top: 56px; padding-bottom: 56px; }
 
-  /* Top nav */
-  .nav {
+  /* Top brand bar */
+  .deck-nav {
     position: fixed; top: 0; left: 0; right: 0;
-    padding: 16px 32px;
-    background: rgba(10,10,10,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--line);
-    display: flex; justify-content: space-between; align-items: center;
+    height: 56px;
+    background: var(--sidebar-bg);
+    border-bottom: 1px solid var(--sidebar-border);
     z-index: 100;
-    font-size: 13px;
-    color: var(--muted);
+    display: flex; align-items: center;
+    padding: 0 28px;
+    gap: 16px;
   }
-  .nav .brand { color: var(--accent); font-weight: 600; letter-spacing: 0.02em; }
-  .nav .meta { font-variant-numeric: tabular-nums; display: flex; gap: 16px; align-items: center; }
-  .nav .counter { background: var(--accent-soft); color: var(--accent); padding: 4px 12px; border-radius: 999px; font-weight: 600; }
+  .deck-nav .brand-link {
+    font-size: 13px; font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+    letter-spacing: -0.2px;
+  }
+  .deck-nav .brand-link:hover { color: var(--accent); }
+  .deck-nav .crumb {
+    font-size: 12px; color: var(--text-light);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.3px;
+  }
+  .deck-nav .crumb b { color: var(--text); font-weight: 600; font-family: 'Space Grotesk', sans-serif; }
+  .deck-nav .spacer { flex: 1; }
+  .deck-nav .counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 700;
+    color: var(--accent);
+    background: var(--accent-light);
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+  .deck-nav .part-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px; font-weight: 700;
+    color: var(--primary);
+    background: var(--primary-bg);
+    padding: 3px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 
   /* Slide deck */
-  .deck {
-    position: fixed;
-    inset: 0;
-    padding-top: 60px;
-  }
+  .deck { position: fixed; top: 56px; bottom: 56px; left: 0; right: 0; overflow: hidden; }
   .slide {
-    position: absolute;
-    inset: 60px 0 0 0;
-    padding: 60px 80px 80px;
+    position: absolute; inset: 0;
+    padding: 32px 40px 32px;
+    overflow-y: auto;
     display: none;
-    flex-direction: column;
-    justify-content: center;
-    max-width: 1500px;
-    margin: 0 auto;
     opacity: 0;
-    transition: opacity 280ms ease;
+    transition: opacity 200ms ease;
   }
-  .slide.active {
-    display: flex;
-    opacity: 1;
+  .slide.active { display: block; opacity: 1; }
+  .slide-inner {
+    max-width: clamp(720px, 86vw, 1200px);
+    margin: 0 auto;
   }
 
   /* Bottom controls */
-  .controls {
+  .deck-controls {
     position: fixed; bottom: 0; left: 0; right: 0;
-    padding: 16px 32px;
-    background: rgba(10,10,10,0.85);
-    backdrop-filter: blur(12px);
-    border-top: 1px solid var(--line);
-    display: flex; justify-content: space-between; align-items: center;
+    height: 56px;
+    background: var(--sidebar-bg);
+    border-top: 1px solid var(--sidebar-border);
     z-index: 100;
-    font-size: 12px;
-    color: var(--muted);
+    display: flex; align-items: center;
+    padding: 0 28px;
+    gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--text-light);
+    letter-spacing: 0.4px;
   }
-  .controls .hint { letter-spacing: 0.08em; }
-  .controls .progress {
-    flex: 1;
-    margin: 0 32px;
-    height: 2px;
-    background: var(--line);
-    border-radius: 2px;
-    overflow: hidden;
+  .deck-controls .progress {
+    flex: 1; height: 3px;
+    background: rgba(0,0,0,0.06);
+    border-radius: 2px; overflow: hidden;
+    margin: 0 16px;
   }
-  .controls .progress .bar {
+  .deck-controls .progress .bar {
     height: 100%;
-    background: var(--accent);
-    transition: width 200ms ease;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    transition: width 220ms ease;
   }
-  .controls button {
-    background: transparent;
-    color: var(--muted);
-    border: 1px solid var(--line);
+  .deck-controls button {
+    background: var(--card-bg);
+    color: var(--text-mid);
+    border: 1px solid var(--rule);
     padding: 6px 14px;
-    border-radius: 6px;
+    border-radius: 5px;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 12px;
-    margin-left: 8px;
-    transition: all 120ms ease;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; font-weight: 600;
+    transition: all 0.15s;
   }
-  .controls button:hover { color: var(--accent); border-color: var(--accent); }
+  .deck-controls button:hover { color: var(--primary); border-color: var(--primary); background: var(--primary-bg); }
 
-  /* Slide content */
-  .slide-num {
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-    font-variant-numeric: tabular-nums;
-  }
-  h1 {
-    font-size: clamp(48px, 6vw, 80px);
-    line-height: 1.05;
-    margin: 0 0 24px;
-    letter-spacing: -0.02em;
-    font-weight: 700;
-  }
-  h2 {
-    font-size: clamp(36px, 4.5vw, 56px);
-    line-height: 1.1;
-    margin: 0 0 20px;
-    letter-spacing: -0.01em;
-    font-weight: 700;
-  }
-  h3 {
-    font-size: 20px;
-    margin: 0 0 10px;
-    font-weight: 600;
-    letter-spacing: -0.005em;
-  }
-  p { color: var(--fg); font-size: 17px; max-width: 900px; margin: 0 0 12px; }
-  p.lede { font-size: 22px; line-height: 1.45; color: var(--muted); max-width: 1000px; }
-  p.tag { color: var(--accent); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.18em; margin: 0 0 14px; }
+  /* Slide-specific tweaks */
+  .slide .page-header { margin-bottom: 18px; }
+  .slide .page-header h1 { font-size: 30px; }
 
-  .grid { display: grid; gap: 20px; }
-  .grid-2 { grid-template-columns: repeat(2, 1fr); }
-  .grid-3 { grid-template-columns: repeat(3, 1fr); }
-  .grid-4 { grid-template-columns: repeat(4, 1fr); }
-  .grid-5 { grid-template-columns: repeat(5, 1fr); }
+  /* Step block override for deck use */
+  .step-deck-card { padding: 22px 28px !important; }
+  .step-deck-card .step-head { margin-bottom: 12px; }
 
-  .card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 24px;
-  }
-  .card.accent { border-color: var(--accent); background: var(--accent-soft); }
+  /* Four-stack table */
+  .stack-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .stack-table th, .stack-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  .stack-table th { color: var(--primary); font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; }
+  .stack-table td b { color: var(--text); }
+  .stack-table td.stack-name { color: var(--primary); font-weight: 700; }
+  .stack-table code { font-size: 10.5px; }
 
-  .stream {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 22px;
-    text-align: center;
-  }
-  .stream.focus { border-color: var(--accent); background: var(--accent-soft); }
-  .stream .label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 6px; }
-  .stream .title { font-size: 16px; font-weight: 600; line-height: 1.3; }
-
-  .step-card {
-    background: var(--card);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 32px;
-    display: flex; flex-direction: column; gap: 12px;
-    max-width: 1100px;
-  }
-  .step-card .step-num {
-    color: var(--accent);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    font-variant-numeric: tabular-nums;
-  }
-  .step-card .step-title { font-size: 28px; font-weight: 700; margin: 0 0 8px; }
-  .step-card .row { display: flex; gap: 12px; align-items: baseline; font-size: 15px; }
-  .step-card .row .k { color: var(--muted); width: 90px; text-transform: uppercase; letter-spacing: 0.08em; font-size: 11px; font-weight: 600; }
-  .step-card .row .v { color: var(--fg); flex: 1; }
-  .step-card .row .v code {
-    background: var(--accent-soft);
-    color: var(--accent);
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 13px;
-    font-family: "SF Mono", Menlo, monospace;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-    margin-top: 12px;
-  }
-  th, td {
-    padding: 12px 14px;
-    text-align: left;
-    border-bottom: 1px solid var(--line);
-    vertical-align: top;
-  }
-  th {
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 12px;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-  td code {
-    background: var(--accent-soft);
-    color: var(--accent);
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 12px;
-  }
-
-  .pill {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 999px;
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-size: 11px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-  }
-
-  .phase-bar { display: flex; gap: 0; margin: 28px 0; }
-  .phase-bar .phase {
-    flex: 1;
-    padding: 24px;
-    background: var(--card);
-    border: 1px solid var(--line);
-    text-align: center;
-  }
-  .phase-bar .phase:first-child { border-radius: 12px 0 0 12px; }
-  .phase-bar .phase:last-child { border-radius: 0 12px 12px 0; }
-  .phase-bar .phase .num { color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: 0.18em; }
-  .phase-bar .phase .title { font-size: 24px; font-weight: 700; margin: 8px 0; }
-  .phase-bar .phase .sub { font-size: 13px; color: var(--muted); }
-
-  .credit {
-    font-size: 14px;
-    color: var(--muted);
-    margin-top: 20px;
-    padding-top: 14px;
-    border-top: 1px solid var(--line);
-  }
-  .credit b { color: var(--fg); }
-
-  ul.checks { list-style: none; padding: 0; margin: 8px 0; }
-  ul.checks li { padding: 6px 0 6px 24px; position: relative; font-size: 15px; }
-  ul.checks li::before { content: "→"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
-
-  /* Intensity indicator */
-  .intensity {
-    display: inline-flex;
-    gap: 3px;
-    align-items: center;
-  }
+  /* Intensity dots */
+  .intensity { display: inline-flex; gap: 3px; align-items: center; }
   .intensity .dot {
-    width: 8px; height: 8px;
+    width: 7px; height: 7px;
     border-radius: 50%;
-    background: var(--line);
+    background: rgba(0,0,0,0.1);
   }
   .intensity .dot.on { background: var(--accent); }
-  .intensity-label {
-    font-size: 10px;
-    color: var(--muted);
+  .intensity .label-int {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9.5px;
+    color: var(--text-light);
+    margin-left: 6px;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-left: 8px;
+    letter-spacing: 0.5px;
   }
 
-  /* Harshdeep slide */
-  .harshdeep-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
-    margin-top: 24px;
-  }
+  /* Harshdeep cards grid */
+  .h-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .h-card {
-    background: var(--card);
-    border: 1px solid var(--line);
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
     border-left: 3px solid var(--accent);
     border-radius: 8px;
-    padding: 18px 22px;
+    padding: 14px 16px;
   }
   .h-card .h-tag {
-    font-size: 11px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; font-weight: 700;
     color: var(--accent);
-    font-weight: 600;
-    letter-spacing: 0.12em;
     text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+  .h-card h4 { font-size: 13px; font-weight: 600; margin: 0 0 4px; }
+  .h-card p { font-size: 12px; color: var(--text-mid); line-height: 1.55; margin: 0; }
+
+  /* Stream grid */
+  .streams { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+  .stream-tile {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 16px 14px;
+    text-align: center;
+  }
+  .stream-tile.focus {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+    box-shadow: 0 2px 10px rgba(212, 132, 42, 0.12);
+  }
+  .stream-tile .stream-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 1px;
     margin-bottom: 6px;
   }
-  .h-card .h-title { font-size: 17px; font-weight: 600; margin: 0 0 6px; }
-  .h-card .h-body { font-size: 14px; color: var(--muted); }
+  .stream-tile.focus .stream-label { color: var(--accent); }
+  .stream-tile .stream-name { font-size: 13px; font-weight: 600; line-height: 1.3; color: var(--text); }
+
+  /* Phase bar */
+  .phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .phase-tile {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .phase-tile .phase-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px; font-weight: 700;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+  .phase-tile .phase-title { font-size: 20px; font-weight: 700; margin: 6px 0 4px; color: var(--text); }
+  .phase-tile .phase-sub { font-size: 12px; color: var(--text-mid); }
+
+  /* Moat cards 2x2 */
+  .moat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .moat-card {
+    background: var(--card-bg);
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 16px 18px;
+  }
+  .moat-card .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+  .moat-card h4 { font-size: 14px; font-weight: 700; margin: 0 0 6px; color: var(--text); }
+  .moat-card p { font-size: 12px; color: var(--text-mid); line-height: 1.55; margin: 0; }
+
+  /* Closing 2-col */
+  .close-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .close-card { padding: 16px 18px; border-radius: 10px; border: 1px solid var(--rule); background: var(--card-bg); }
+  .close-card.accent { border-color: rgba(212, 132, 42, 0.25); background: var(--accent-bg); }
+  .close-card h4 { font-size: 13px; font-weight: 700; color: var(--text); margin: 0 0 10px; }
+  .close-card.accent h4 { color: var(--accent); }
+  .close-card ul { list-style: none; padding: 0; margin: 0; }
+  .close-card li { font-size: 12.5px; color: var(--text-mid); padding: 4px 0 4px 18px; position: relative; line-height: 1.5; }
+  .close-card li::before { content: '→'; color: var(--accent); font-weight: 700; position: absolute; left: 0; }
 
   @media (max-width: 900px) {
-    .slide { padding: 40px 24px 60px; }
-    .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; }
-    .phase-bar { flex-direction: column; }
-    .phase-bar .phase { border-radius: 0 !important; }
-    .harshdeep-grid { grid-template-columns: 1fr; }
+    .streams { grid-template-columns: 1fr 1fr; }
+    .phases { grid-template-columns: 1fr; }
+    .moat-grid, .close-grid, .h-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<div class="nav">
-  <div class="brand"><a href="https://prody-dris.github.io/ai-sdlc-pitches/" style="color: inherit; text-decoration: none; opacity: 0.65; margin-right: 8px;">← Hub</a> Dhwani SDLC · Stage A · Requirement Gathering <span style="opacity: 0.5; margin-left: 8px;">· Part 1 of 3</span></div>
-  <div class="meta">
-    <span>14 May 2026 · v2</span>
-    <span class="counter"><span id="cur">1</span> / <span id="total">21</span></span>
-  </div>
+<div class="deck-nav">
+  <a href="https://prody-dris.github.io/ai-sdlc-pitches/" class="brand-link">← Hub</a>
+  <span class="part-tag">Part 1 of 3</span>
+  <span class="crumb"><b>Dhwani SDLC</b> / Stage A · Requirement Gathering</span>
+  <span class="spacer"></span>
+  <span class="counter"><span id="cur">1</span> / <span id="total">21</span></span>
 </div>
 
 <div class="deck">
 
-<section class="slide active">
-  <p class="slide-num">01 / Cover</p>
-  <h1>Requirement Gathering, Reimagined</h1>
-  <p class="lede">From Intent to TRD, with AI in every step. The Dhwani SDLC — Stage A.</p>
-  <div class="credit">Co-authored by <b>Nihaan Mohammed</b> &amp; <b>Harshdeep Singh</b> · Working group: Ankit, Navjeet, Abhijit, Deepak, Swapnil, Shweta · Day-1: 12 May 2026</div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">02 / The Framework</p>
-  <h2>5 streams, running in parallel.</h2>
-  <p class="lede">SDLC isn't a pipeline. It's three software-delivery streams flanked by two always-on supports.</p>
-  <div class="grid grid-5" style="margin-top: 36px;">
-    <div class="stream focus">
-      <div class="label">Stream 1 · Today</div>
-      <div class="title">SDLC<br>Requirement Gathering</div>
-    </div>
-    <div class="stream">
-      <div class="label">Stream 2</div>
-      <div class="title">SDLC<br>Dev &amp; Testing</div>
-    </div>
-    <div class="stream">
-      <div class="label">Stream 3</div>
-      <div class="title">SDLC<br>Testing &amp; Performance</div>
-    </div>
-    <div class="stream">
-      <div class="label">Stream 4 · Ankit</div>
-      <div class="title">DevOps<br>+ Observability</div>
-    </div>
-    <div class="stream">
-      <div class="label">Stream 5 · Deepak</div>
-      <div class="title">Knowledge<br>Management</div>
-    </div>
+<!-- 1 · Cover -->
+<section class="slide active"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">14 May 2026 · Day-1 framework · Closing Session 2/2</div>
+    <h1>Requirement Gathering<span>,</span> reimagined<span>.</span></h1>
+    <div class="page-meta">From intent to TRD, with AI in every step · Stage A of the Dhwani SDLC</div>
   </div>
-  <p style="margin-top: 28px; color: var(--muted);">Today we ship Stream 1. Streams 2–5 follow per the Day-1 plan.</p>
-</section>
+  <section>
+    <h2>Co-Authors</h2>
+    <div class="prose">
+      <p><strong>Nihaan Mohammed</strong> · Group PM, Dhwani RIS &nbsp;&middot;&nbsp; <strong>Harshdeep Singh</strong> · PM</p>
+      <p style="margin-top:6px; font-size: 12.5px;">Working group · Ankit · Navjeet · Abhijit · Deepak · Swapnil · Shweta</p>
+    </div>
+  </section>
+</div></section>
 
-<section class="slide">
-  <p class="slide-num">03 / The Moat</p>
-  <h2>Why this isn't just another template stack.</h2>
-  <div class="grid grid-2" style="margin-top: 32px;">
-    <div class="card">
-      <h3>1. Phase-explicit SDLC</h3>
-      <p style="font-size: 15px;">Intent · Solutioning · TRD. Three hard gates with crisp criteria. No consultancy does this cleanly — they collapse it all into "BRD."</p>
-    </div>
-    <div class="card">
-      <h3>2. AI-native execution</h3>
-      <p style="font-size: 15px;">Every phase has a <b>Tool</b> + a named <b>Skill</b> + an <b>Owner</b>. AI raises PRs into the skills repo when gaps appear.</p>
-    </div>
-    <div class="card">
-      <h3>3. Three verticals run parallel</h3>
-      <p style="font-size: 15px;">Knowledge Management, DevOps, Project Governance check <i>every</i> phase — not bolted on at the end.</p>
-    </div>
-    <div class="card">
-      <h3>4. Stack-aware fan-out</h3>
-      <p style="font-size: 15px;">Same methodology. Four distribution tracks. Calibrated intensity per stack — covered in slide 19.</p>
-    </div>
+<!-- 2 · The framework -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Slide 02 / The Framework</div>
+    <h1>5 streams<span>,</span> in parallel<span>.</span></h1>
+    <div class="page-meta">SDLC isn't a pipeline. Three software-delivery streams flanked by two always-on supports.</div>
   </div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">04 / Phase Map</p>
-  <h2>RG, in three phases.</h2>
-  <div class="phase-bar">
-    <div class="phase">
-      <div class="num">PHASE 1</div>
-      <div class="title">Intent</div>
-      <div class="sub">What does the client <i>actually</i> want?</div>
+  <section>
+    <h2>Day-1 Locked Structure <small>— 12 May 2026</small></h2>
+    <div class="streams">
+      <div class="stream-tile focus">
+        <div class="stream-label">Stream 1 · Today</div>
+        <div class="stream-name">SDLC<br>Requirement Gathering</div>
+      </div>
+      <div class="stream-tile">
+        <div class="stream-label">Stream 2</div>
+        <div class="stream-name">SDLC<br>Dev &amp; Testing</div>
+      </div>
+      <div class="stream-tile">
+        <div class="stream-label">Stream 3</div>
+        <div class="stream-name">SDLC<br>Testing &amp; Performance</div>
+      </div>
+      <div class="stream-tile">
+        <div class="stream-label">Stream 4 · Ankit</div>
+        <div class="stream-name">DevOps<br>+ Observability</div>
+      </div>
+      <div class="stream-tile">
+        <div class="stream-label">Stream 5 · Deepak</div>
+        <div class="stream-name">Knowledge<br>Management</div>
+      </div>
     </div>
-    <div class="phase">
-      <div class="num">PHASE 2</div>
-      <div class="title">Solutioning</div>
-      <div class="sub">What will we build to meet it?</div>
+    <div class="callout" style="margin-top: 16px;">
+      <p><strong>Today we ship Stream 1.</strong> Streams 2–5 follow in subsequent cuts per the Day-1 plan. Hub at <a href="https://prody-dris.github.io/ai-sdlc-pitches/">prody-dris.github.io/ai-sdlc-pitches</a>.</p>
     </div>
-    <div class="phase">
-      <div class="num">PHASE 3</div>
-      <div class="title">TRD Setup</div>
-      <div class="sub">How does engineering pick it up?</div>
+  </section>
+</div></section>
+
+<!-- 3 · The Moat -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Slide 03 / The Moat</div>
+    <h1>Why this isn't just another template stack<span>.</span></h1>
+    <div class="page-meta">Templates are commodity. This is methodology.</div>
+  </div>
+  <section>
+    <h2>Four Differentiators</h2>
+    <div class="moat-grid">
+      <div class="moat-card">
+        <div class="num">01</div>
+        <h4>Phase-explicit SDLC</h4>
+        <p>Intent · Solutioning · TRD. Three hard gates with crisp criteria. No consultancy does this cleanly — they collapse it all into "BRD."</p>
+      </div>
+      <div class="moat-card">
+        <div class="num">02</div>
+        <h4>AI-native execution</h4>
+        <p>Every phase has a <strong>Tool</strong> + a named <strong>Skill</strong> + an <strong>Owner</strong>. AI raises PRs into the skills repo when gaps appear.</p>
+      </div>
+      <div class="moat-card">
+        <div class="num">03</div>
+        <h4>Three verticals run parallel</h4>
+        <p>Knowledge Management · DevOps · Project Governance check <em>every</em> phase — not bolted on at the end.</p>
+      </div>
+      <div class="moat-card">
+        <div class="num">04</div>
+        <h4>Stack-aware fan-out</h4>
+        <p>Same methodology. Four distribution tracks with calibrated intensity per stack — covered on slide 19.</p>
+      </div>
     </div>
+  </section>
+</div></section>
+
+<!-- 4 · Phase Map -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Slide 04 / Phase Map</div>
+    <h1>RG<span>,</span> in three phases<span>.</span></h1>
+    <div class="page-meta">10 steps. 3 phases. Each step ships one freemium tool and one named AI skill.</div>
   </div>
-  <p class="lede" style="margin-top: 28px;">10 steps across 3 phases. Each step ships with one freemium tool and one named AI skill.</p>
-</section>
-
-<section class="slide">
-  <p class="slide-num">05 / Phase 1 · Intent</p>
-  <h2>What does the client actually want?</h2>
-  <p class="lede">Failure mode this phase prevents: shipping the wrong thing because we never separated "client need" from "client request."</p>
-  <p class="tag" style="margin-top: 28px;">Gate criteria · Signed Project Charter</p>
-</section>
-
-<section class="slide">
-  <p class="slide-num">06 / Step 1</p>
-  <div class="step-card">
-    <div class="step-num">STEP 01 · INTENT</div>
-    <h3 class="step-title">Kickoff &amp; Stakeholder Map</h3>
-    <div class="row"><div class="k">Output</div><div class="v">Power–Interest matrix · signed kickoff attendees list</div></div>
-    <div class="row"><div class="k">Tool</div><div class="v">Miro <span class="pill">free · 3 boards</span></div></div>
-    <div class="row"><div class="k">Skill</div><div class="v"><code>stakeholder-mapper</code></div></div>
-    <div class="row"><div class="k">Verticals</div><div class="v">KM: filed in client folder · PG: kickoff logged in SteerCo registry</div></div>
-    <div class="row"><div class="k">Gate</div><div class="v">All stakeholder roles mapped to a real human; signoff authority identified.</div></div>
-  </div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">07 / Step 2</p>
-  <div class="step-card">
-    <div class="step-num">STEP 02 · INTENT</div>
-    <h3 class="step-title">Discovery Interviews &amp; MoM</h3>
-    <div class="row"><div class="k">Output</div><div class="v">Recorded 1-on-1s + structured MoMs per interview</div></div>
-    <div class="row"><div class="k">Tool</div><div class="v">Fireflies.ai <span class="pill">free · 800 min/mo</span> or Otter.ai <span class="pill">free · 300 min/mo</span></div></div>
-    <div class="row"><div class="k">Skill</div><div class="v"><code>prody-mom</code> <span class="pill">existing</span></div></div>
-    <div class="row"><div class="k">Verticals</div><div class="v">KM: MoM repo · PG: action items auto-route to tracker</div></div>
-    <div class="row"><div class="k">Gate</div><div class="v">Every stakeholder interviewed at least once; MoM signed off by interviewee.</div></div>
-  </div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">08 / Step 3</p>
-  <div class="step-card">
-    <div class="step-num">STEP 03 · INTENT</div>
-    <h3 class="step-title">Project Charter</h3>
-    <div class="row"><div class="k">Output</div><div class="v">Signed Project Charter — scope, success criteria, team, escalation path</div></div>
-    <div class="row"><div class="k">Tool</div><div class="v">Notion <span class="pill">free · personal/small team</span></div></div>
-    <div class="row"><div class="k">Skill</div><div class="v"><code>charter-drafter</code></div></div>
-    <div class="row"><div class="k">Verticals</div><div class="v">KM: filed · PG: charter = SteerCo seed doc</div></div>
-    <div class="row"><div class="k">Gate</div><div class="v">Signed by client SPOC + Dhwani PM; out-of-scope items explicit.</div></div>
-  </div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">09 / Phase 2 · Solutioning</p>
-  <h2>What will we build to meet the intent?</h2>
-  <p class="lede">Failure mode this phase prevents: building exactly what the client asked for, even when it doesn't solve the underlying intent.</p>
-  <p class="tag" style="margin-top: 28px;">Gate criteria · Sol Doc Sections 5.3 – 5.9 complete</p>
-</section>
-
-<section class="slide">
-  <p class="slide-num">10 / Step 4</p>
-  <div class="step-card">
-    <div class="step-num">STEP 04 · SOLUTIONING</div>
-    <h3 class="step-title">Functional Requirements</h3>
-    <div class="row"><div class="k">Output</div><div class="v">Module-wise FR table with named approver per FR (per Dhwani Sol Doc §5.3)</div></div>
-    <div class="row"><div class="k">Tool</div><div class="v">Linear <span class="pill">free · ≤250 issues</span> · or Bitrix</div></div>
-    <div class="row"><div class="k">Skill</div><div class="v"><code>feature-spec</code> <span class="pill">existing</span></div></div>
-    <div class="row"><div class="k">Verticals</div><div class="v">DevOps: FR → ticket scaffold · KM: FR → wiki</div></div>
-    <div class="row"><div class="k">Gate</div><div class="v">Every FR has a named client-side approver.</div></div>
-  </div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">11 / Step 5</p>
-  <div class="step-card">
-    <div class="step-num">STEP 05 · SOLUTIONING</div>
-    <h3 class="step-title">User Roles &amp; Auth Matrix</h3>
-    <div class="row"><div class="k">Output</div><div class="v">Role × Permission matrix; auth method per role (per Sol Doc §5.4)</div></div>
-    <div class="row"><div class="k">Tool</div><div class="v">Google Sheets <span class="pill">free</span></div></div>
-    <div class="row"><div class="k">Skill</div><div class="v"><code>rbac-matrix-author</code></div></div>
-    <div class="row"><div class="k">Verticals</div><div class="v">DevOps: matrix seeds permission fixtures · KM: role catalogue</div></div>
-    <div class="row"><div class="k">Gate</div><div class="v">Every role has at least one human assigned; auth method picked.</div></div>
-  </div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">12 / Step 6</p>
-  <div class="step-card">
-    <div class="step-num">STEP 06 · SOLUTIONING</div>
-    <h3 class="step-title">Process Workflows</h3>
-    <div class="row"><div class="k">Output</div><div class="v">Mermaid flowcharts per process; edge-cases table (per Sol Doc §5.5)</div></div>
-    <div class="row"><div class="k">Tool</div><div class="v">Mermaid <span class="pill">free</span> · via Markdown or mermaid.live</div></div>
-    <div class="row"><div class="k">Skill</div><div class="v"><code>workflow-author</code></div></div>
-    <div class="row"><div class="k">Verticals</div><div class="v">KM: embedded in Sol Doc §5.5</div></div>
-    <div class="row"><div class="k">Gate</div><div class="v">Edge cases enumerated explicitly — not just happy paths.</div></div>
-  </div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">13 / Step 7</p>
-  <div class="step-card">
-    <div class="step-num">STEP 07 · SOLUTIONING</div>
-    <h3 class="step-title">Data Model &amp; Interfaces</h3>
-    <div class="row"><div class="k">Output</div><div class="v">Data dictionary + system-interface table (per Sol Doc §5.6 + §5.7)</div></div>
-    <div class="row"><div class="k">Tool</div><div class="v">dbdiagram.io <span class="pill">free</span> · or PlantUML</div></div>
-    <div class="row"><div class="k">Skill</div><div class="v"><code>data-model-author</code></div></div>
-    <div class="row"><div class="k">Verticals</div><div class="v">DevOps: seeds TRD + DocType schema</div></div>
-    <div class="row"><div class="k">Gate</div><div class="v">Every external interface has a named owner who confirmed the spec.</div></div>
-  </div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">14 / Step 8</p>
-  <div class="step-card">
-    <div class="step-num">STEP 08 · SOLUTIONING</div>
-    <h3 class="step-title">Wireframes &amp; UX</h3>
-    <div class="row"><div class="k">Output</div><div class="v">Hi-fi wireframes per user type · PNG embeds in Sol Doc (per §5.9 — PNG, not link)</div></div>
-    <div class="row"><div class="k">Tool</div><div class="v">Figma <span class="pill">free tier</span> + Figma AI · or Lovable</div></div>
-    <div class="row"><div class="k">Skill</div><div class="v"><code>frontend-design</code> · <code>ui-ux-master</code> · <code>frappe-ui-design</code> <span class="pill">Harshdeep's bundle</span></div></div>
-    <div class="row"><div class="k">Verticals</div><div class="v">KM: PNGs archived in Sol Doc</div></div>
-    <div class="row"><div class="k">Gate</div><div class="v">Wireframe walkthrough done with client end-user — not just SPOC.</div></div>
-  </div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">15 / Phase 3 · TRD Setup</p>
-  <h2>How does engineering pick it up?</h2>
-  <p class="lede">Failure mode this phase prevents: dev team gets a Sol Doc that reads like marketing rather than a build contract.</p>
-  <p class="tag" style="margin-top: 28px;">Gate criteria · Sol Doc §5.11, §5.12, §5.16 complete</p>
-</section>
-
-<section class="slide">
-  <p class="slide-num">16 / Step 9</p>
-  <div class="step-card">
-    <div class="step-num">STEP 09 · TRD SETUP</div>
-    <h3 class="step-title">Solution Document Drafting</h3>
-    <div class="row"><div class="k">Output</div><div class="v">Filled Dhwani Sol Doc v2.0 — all 16 sections complete</div></div>
-    <div class="row"><div class="k">Tool</div><div class="v">Google Docs / Word + Claude <span class="pill">Advisory + Brainstorming · Harshdeep</span></div></div>
-    <div class="row"><div class="k">Skill</div><div class="v"><code>solution-doc-author</code> · composite, orchestrates Steps 1–8 outputs into Sol Doc sections</div></div>
-    <div class="row"><div class="k">Verticals</div><div class="v">KM: archived · DevOps: §5.11 Tech Stack feeds infra · PG: signoff workflow</div></div>
-    <div class="row"><div class="k">Gate</div><div class="v">§5.11 + §5.12 + §5.16 complete — these are the TRD seeds.</div></div>
-  </div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">17 / Step 10</p>
-  <div class="step-card">
-    <div class="step-num">STEP 10 · TRD SETUP</div>
-    <h3 class="step-title">Sol Doc Review &amp; Sign-off</h3>
-    <div class="row"><div class="k">Output</div><div class="v">Signed Sol Doc — version-controlled, immutable archive</div></div>
-    <div class="row"><div class="k">Tool</div><div class="v">GitHub <span class="pill">free · private repos</span> · or SharePoint with versioning</div></div>
-    <div class="row"><div class="k">Skill</div><div class="v"><code>sol-doc-reviewer</code> · runs 16-section gap analysis before each review</div></div>
-    <div class="row"><div class="k">Verticals</div><div class="v">PG: signoff captured in version log · traceable</div></div>
-    <div class="row"><div class="k">Gate</div><div class="v">2 review cycles done (Dhwani internal → client) before sign-off; digital signoff per Dhwani template.</div></div>
-  </div>
-</section>
-
-<section class="slide">
-  <p class="slide-num">18 / The Four Stacks</p>
-  <h2>One methodology. Four distribution tracks.</h2>
-  <table>
-    <thead>
-      <tr>
-        <th>Stack</th>
-        <th>What it is</th>
-        <th>RG treatment</th>
-        <th>Distribution</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><b>mGrant</b></td>
-        <td>Donor + CSR products</td>
-        <td>Pre-built FR templates per module · fit-gap analysis against existing flows</td>
-        <td><code>mgrant-stack</code> Frappe plugin</td>
-      </tr>
-      <tr>
-        <td><b>mGrant NuO</b></td>
-        <td>NGO-facing — sub-grants, FCRA, results framework, PUR</td>
-        <td>Separate FR template set; NGO personas; FCRA + LFA-specific Sol Doc sections</td>
-        <td><code>mgrant-nuo-stack</code> Frappe plugin</td>
-      </tr>
-      <tr>
-        <td><b>Frappe</b></td>
-        <td>Services, customizations, <b>mForm</b> (offline app is increment)</td>
-        <td>Generic DocType + workflow scaffolding; mForm adds offline-Flutter delta at Steps 7 + 8</td>
-        <td><code>frappe-build-stack</code> plugin</td>
-      </tr>
-      <tr>
-        <td><b>Non-Frappe</b></td>
-        <td>Greenfield — analytics, custom React/Vue/Python</td>
-        <td>No Frappe assumptions; stack picker at TRD; data dictionary serves chosen DB</td>
-        <td>Methodology pack — Claude/Cursor skills + templates · no plugin</td>
-      </tr>
-    </tbody>
-  </table>
-  <p style="margin-top: 24px; color: var(--muted); font-size: 15px;"><b>Why mForm sits inside Frappe Stack:</b> it's a project MIS on Frappe; the only differentiator is the offline-first Flutter app. That's a one-layer artefact increment at Steps 7 + 8 — not a new SDLC.</p>
-</section>
-
-<section class="slide">
-  <p class="slide-num">19 / The Real Question</p>
-  <h2>Does RG need to fork per stack?</h2>
-  <p class="lede"><b style="color: var(--accent);">No.</b> Same methodology. <b>Calibrated intensity per stack.</b> The depth-dial per step is the stack-specific override — not the process itself.</p>
-  <table style="margin-top: 24px;">
-    <thead>
-      <tr>
-        <th>Step</th>
-        <th>mGrant</th>
-        <th>mGrant NuO</th>
-        <th>Frappe</th>
-        <th>Non-Frappe</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><b>1 · Kickoff</b></td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span> templated</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span> templated</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span> standard</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span> standard</td>
-      </tr>
-      <tr>
-        <td><b>2 · Discovery + MoM</b></td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span> fit-gap</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span> NGO personas</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span> standard</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span> heavy</td>
-      </tr>
-      <tr>
-        <td><b>3 · Charter</b></td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span> light</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span> standard</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span> standard</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span> heavy</td>
-      </tr>
-      <tr>
-        <td><b>4 · FRs</b></td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span> fit-gap</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span> config + gaps</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span> full</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span> full</td>
-      </tr>
-      <tr>
-        <td><b>7 · Data Model</b></td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span> fit-gap + extensions</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span> NuO overrides</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span> full + mForm offline delta</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span> full + stack picker</td>
-      </tr>
-      <tr>
-        <td><b>9 · Sol Doc</b></td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span> lighter</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span> + FCRA + LFA</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span> full 16-section</td>
-        <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span> full + stack rationale</td>
-      </tr>
-      <tr>
-        <td><b>Typical effort</b></td>
-        <td>~5 days</td>
-        <td>~2 weeks</td>
-        <td>~3 weeks</td>
-        <td>~4 weeks</td>
-      </tr>
-    </tbody>
-  </table>
-  <p style="margin-top: 20px; color: var(--muted); font-size: 14px;">One process. One toolset. One skills repo. The <i>depth</i> per step varies; the methodology doesn't.</p>
-</section>
-
-<section class="slide">
-  <p class="slide-num">20 / Sourced from Harshdeep</p>
-  <h2>Harshdeep's pitch, grounded.</h2>
-  <p class="lede">This deck wouldn't be coherent without Harshdeep's RG artefact work. Where his contributions land in the stack:</p>
-  <div class="harshdeep-grid">
-    <div class="h-card">
-      <div class="h-tag">Step 9 · Sol Doc</div>
-      <div class="h-title">Dhwani Solution Document v2.0</div>
-      <div class="h-body">16-section template — Functional Reqs, Auth, Workflow, Data, Interfaces, Tech Stack, Security, Risks. Harshdeep co-maintains.</div>
+  <section>
+    <h2>Phases</h2>
+    <div class="phases">
+      <div class="phase-tile">
+        <div class="phase-num">Phase 1</div>
+        <div class="phase-title">Intent</div>
+        <div class="phase-sub">What does the client <em>actually</em> want?</div>
+      </div>
+      <div class="phase-tile">
+        <div class="phase-num">Phase 2</div>
+        <div class="phase-title">Solutioning</div>
+        <div class="phase-sub">What will we build to meet it?</div>
+      </div>
+      <div class="phase-tile">
+        <div class="phase-num">Phase 3</div>
+        <div class="phase-title">TRD Setup</div>
+        <div class="phase-sub">How does engineering pick it up?</div>
+      </div>
     </div>
-    <div class="h-card">
-      <div class="h-tag">Step 9 · Workflow</div>
-      <div class="h-title">Advisory Mode + Brainstorming</div>
-      <div class="h-body">Harshdeep's recommended Sol Doc authoring loop: Claude Advisory + Brainstorming + ChatGPT + Mermaid. Adopted as the canonical workflow.</div>
-    </div>
-    <div class="h-card">
-      <div class="h-tag">Step 8 · Wireframes</div>
-      <div class="h-title">Figma AI skill bundle</div>
-      <div class="h-body">ui-ux-master · frontend-designer · frontend-patterns · frappe-ui-design · frappe-dashboard-design · frappe-custom-html-block. The full UI/UX skill stack he proposed.</div>
-    </div>
-    <div class="h-card">
-      <div class="h-tag">Cross-cutting</div>
-      <div class="h-title">Project Plan template v1.2</div>
-      <div class="h-body">WBS structure for Kickoff + RG. Harshdeep co-authored (Gantt automation, version control sheet, formula automation).</div>
-    </div>
-    <div class="h-card">
-      <div class="h-tag">Supporting</div>
-      <div class="h-title">Stakeholder Analysis + Project Charter</div>
-      <div class="h-body">Surfaced as supporting deliverables. Now embedded as Step 1 (Stakeholder Map) and Step 3 (Charter) — first-class RG steps, not afterthoughts.</div>
-    </div>
-    <div class="h-card">
-      <div class="h-tag">Conditional</div>
-      <div class="h-title">Analytics RG template</div>
-      <div class="h-body">Indicator-level RG sheet for dashboarding projects. Sits inside Non-Frappe Stack as the Step 4 + Step 7 entry point for analytics work.</div>
-    </div>
-  </div>
-</section>
+  </section>
+</div></section>
 
-<section class="slide">
-  <p class="slide-num">21 / What's Next</p>
-  <h2>What we lock today, what ships after.</h2>
-  <div class="grid grid-2" style="margin-top: 32px;">
-    <div class="card accent">
-      <h3>Today's ask · 12:30 – 1:30</h3>
-      <ul class="checks">
-        <li>Align on Intent → Solutioning → TRD framing</li>
-        <li>Confirm one tool + one skill per step</li>
-        <li>Confirm the four-stack overlay + calibrated intensity</li>
-        <li>Pair-wise development by team after the call</li>
-        <li>Share v1 to the larger workgroup by EoD today</li>
-      </ul>
-    </div>
-    <div class="card">
-      <h3>After Stage A is adopted</h3>
-      <ul class="checks">
-        <li>Stage B — SDLC Dev &amp; Testing</li>
-        <li>Stage C — SDLC Testing &amp; Performance</li>
-        <li>DevOps + Observability — Ankit</li>
-        <li>Knowledge Management — Deepak</li>
-        <li>Bi-weekly framework review · Champion role to be named</li>
-      </ul>
-    </div>
+<!-- 5 · Phase 1 divider -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 1 / Intent · Steps 1–3</div>
+    <h1>What does the client <span>actually</span> want?</h1>
+    <div class="page-meta">Failure mode prevented · shipping the wrong thing because we never separated "client need" from "client request."</div>
   </div>
-  <div class="credit" style="margin-top: 32px;">Dhwani RIS · Group PM Office · 14 May 2026 · v2 · <b>Nihaan Mohammed</b> &amp; <b>Harshdeep Singh</b></div>
-</section>
+  <section>
+    <h2>Gate Criteria <small>— Signed Project Charter</small></h2>
+    <div class="callout accent">
+      <p><strong>Three steps to get here:</strong> Kickoff &amp; Stakeholder Map → Discovery + MoM → Project Charter. Once charter is signed, we exit Intent and enter Solutioning.</p>
+    </div>
+  </section>
+</div></section>
+
+<!-- 6 · Step 1 -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 1 · Intent / Step 1 of 10</div>
+    <h1>Kickoff &amp; Stakeholder Map<span>.</span></h1>
+    <div class="page-meta">Output · Power–Interest matrix + signed kickoff attendees list</div>
+  </div>
+  <section>
+    <h2>Tool + Skill</h2>
+    <div class="r"><code>TOOL</code><span><strong>GitHub repo</strong> + <strong>Claude CLI</strong> &nbsp;·&nbsp; stakeholder Markdown, web-rendered like this deck</span></div>
+    <div class="r"><code>SKILL</code><span><strong>stakeholder-mapper</strong> &nbsp;·&nbsp; new</span></div>
+    <div class="r"><code>VERTICALS</code><span><strong>KM:</strong> filed in client folder &nbsp;·&nbsp; <strong>PG:</strong> kickoff logged in SteerCo registry</span></div>
+    <div class="r"><code>GATE</code><span>All stakeholder roles mapped to a real human; signoff authority identified.</span></div>
+  </section>
+</div></section>
+
+<!-- 7 · Step 2 -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 1 · Intent / Step 2 of 10</div>
+    <h1>Discovery Interviews &amp; MoM<span>.</span></h1>
+    <div class="page-meta">Output · Recorded 1-on-1s + structured MoMs per interview</div>
+  </div>
+  <section>
+    <h2>Tool + Skill</h2>
+    <div class="r"><code>TOOL</code><span><strong>Fireflies.ai</strong> &nbsp;·&nbsp; free · 800 min/mo &nbsp;<em>or</em>&nbsp; <strong>Otter.ai</strong> · free · 300 min/mo</span></div>
+    <div class="r"><code>SKILL</code><span><strong>prody-mom</strong> &nbsp;·&nbsp; existing in stack</span></div>
+    <div class="r"><code>VERTICALS</code><span><strong>KM:</strong> MoM repo &nbsp;·&nbsp; <strong>PG:</strong> action items auto-route to tracker</span></div>
+    <div class="r"><code>GATE</code><span>Every stakeholder interviewed at least once; MoM signed off by interviewee.</span></div>
+  </section>
+</div></section>
+
+<!-- 8 · Step 3 -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 1 · Intent / Step 3 of 10</div>
+    <h1>Project Charter<span>.</span></h1>
+    <div class="page-meta">Output · Signed Project Charter — scope, success criteria, team, escalation path</div>
+  </div>
+  <section>
+    <h2>Tool + Skill</h2>
+    <div class="r"><code>TOOL</code><span><strong>GitHub repo</strong> + <strong>Claude CLI</strong> &nbsp;·&nbsp; Charter as Markdown, version-controlled, web-rendered</span></div>
+    <div class="r"><code>SKILL</code><span><strong>charter-drafter</strong> &nbsp;·&nbsp; new</span></div>
+    <div class="r"><code>VERTICALS</code><span><strong>KM:</strong> filed &nbsp;·&nbsp; <strong>PG:</strong> charter = SteerCo seed doc</span></div>
+    <div class="r"><code>GATE</code><span>Signed by client SPOC + Dhwani PM; out-of-scope items explicit.</span></div>
+  </section>
+</div></section>
+
+<!-- 9 · Phase 2 divider -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 2 / Solutioning · Steps 4–8</div>
+    <h1>What will we <span>build</span> to meet the intent?</h1>
+    <div class="page-meta">Failure mode prevented · building exactly what the client asked for, even when it doesn't solve the underlying intent.</div>
+  </div>
+  <section>
+    <h2>Gate Criteria <small>— Sol Doc §5.3 – §5.9 complete</small></h2>
+    <div class="callout accent">
+      <p><strong>Five steps in Solutioning:</strong> Functional Requirements → User Roles + Auth → Process Workflows → Data Model + Interfaces → Wireframes. This is where the most artefact work happens.</p>
+    </div>
+  </section>
+</div></section>
+
+<!-- 10 · Step 4 -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 2 · Solutioning / Step 4 of 10</div>
+    <h1>Functional Requirements<span>.</span></h1>
+    <div class="page-meta">Output · Module-wise FR table with named approver per FR · Dhwani Sol Doc §5.3</div>
+  </div>
+  <section>
+    <h2>Tool + Skill</h2>
+    <div class="r"><code>TOOL</code><span><strong>GitHub Issues</strong> + <strong>Claude CLI</strong> &nbsp;·&nbsp; each FR is an issue, index page auto-generated</span></div>
+    <div class="r"><code>SKILL</code><span><strong>feature-spec</strong> &nbsp;·&nbsp; existing</span></div>
+    <div class="r"><code>VERTICALS</code><span><strong>DevOps:</strong> FR → ticket scaffold &nbsp;·&nbsp; <strong>KM:</strong> FR → wiki</span></div>
+    <div class="r"><code>GATE</code><span>Every FR has a named client-side approver.</span></div>
+  </section>
+</div></section>
+
+<!-- 11 · Step 5 -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 2 · Solutioning / Step 5 of 10</div>
+    <h1>User Roles &amp; Auth Matrix<span>.</span></h1>
+    <div class="page-meta">Output · Role × Permission matrix · auth method per role · Sol Doc §5.4</div>
+  </div>
+  <section>
+    <h2>Tool + Skill</h2>
+    <div class="r"><code>TOOL</code><span><strong>GitHub repo</strong> + <strong>Claude CLI</strong> &nbsp;·&nbsp; matrix as Markdown/YAML, feeds permission fixtures directly</span></div>
+    <div class="r"><code>SKILL</code><span><strong>rbac-matrix-author</strong> &nbsp;·&nbsp; new</span></div>
+    <div class="r"><code>VERTICALS</code><span><strong>DevOps:</strong> seeds permission fixtures &nbsp;·&nbsp; <strong>KM:</strong> role catalogue</span></div>
+    <div class="r"><code>GATE</code><span>Every role has at least one human assigned; auth method picked.</span></div>
+  </section>
+</div></section>
+
+<!-- 12 · Step 6 -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 2 · Solutioning / Step 6 of 10</div>
+    <h1>Process Workflows<span>.</span></h1>
+    <div class="page-meta">Output · Mermaid flowcharts per process · edge-cases table · Sol Doc §5.5</div>
+  </div>
+  <section>
+    <h2>Tool + Skill</h2>
+    <div class="r"><code>TOOL</code><span><strong>Mermaid</strong> &nbsp;·&nbsp; free · via Markdown or mermaid.live</span></div>
+    <div class="r"><code>SKILL</code><span><strong>workflow-author</strong> &nbsp;·&nbsp; new</span></div>
+    <div class="r"><code>VERTICALS</code><span><strong>KM:</strong> embedded in Sol Doc §5.5</span></div>
+    <div class="r"><code>GATE</code><span>Edge cases enumerated explicitly — not just happy paths.</span></div>
+  </section>
+</div></section>
+
+<!-- 13 · Step 7 -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 2 · Solutioning / Step 7 of 10</div>
+    <h1>Data Model &amp; Interfaces<span>.</span></h1>
+    <div class="page-meta">Output · Data dictionary + system-interface table · Sol Doc §5.6 + §5.7</div>
+  </div>
+  <section>
+    <h2>Tool + Skill</h2>
+    <div class="r"><code>TOOL</code><span><strong>Mermaid ER</strong> + <strong>GitHub</strong> + <strong>Claude CLI</strong> &nbsp;·&nbsp; ER diagram + DocType JSON in repo</span></div>
+    <div class="r"><code>SKILL</code><span><strong>data-model-author</strong> &nbsp;·&nbsp; new</span></div>
+    <div class="r"><code>VERTICALS</code><span><strong>DevOps:</strong> seeds TRD + DocType schema</span></div>
+    <div class="r"><code>GATE</code><span>Every external interface has a named owner who confirmed the spec.</span></div>
+  </section>
+</div></section>
+
+<!-- 14 · Step 8 -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 2 · Solutioning / Step 8 of 10</div>
+    <h1>Wireframes &amp; UX<span>.</span></h1>
+    <div class="page-meta">Output · Hi-fi wireframes per user type · PNG embeds in Sol Doc · §5.9 (PNG, not link)</div>
+  </div>
+  <section>
+    <h2>Tool + Skill <span class="badge" style="background: var(--accent-light); color: var(--accent); font-size: 8px; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 1px;">Harshdeep's bundle</span></h2>
+    <div class="r"><code>TOOL</code><span><strong>Figma</strong> &nbsp;·&nbsp; free tier · + Figma AI &nbsp;<em>or</em>&nbsp; <strong>Lovable</strong></span></div>
+    <div class="r"><code>SKILLS</code><span><strong>frontend-design</strong> · <strong>ui-ux-master</strong> · <strong>frappe-ui-design</strong> · <strong>frappe-dashboard-design</strong> · <strong>frappe-custom-html-block</strong></span></div>
+    <div class="r"><code>VERTICALS</code><span><strong>KM:</strong> PNGs archived in Sol Doc</span></div>
+    <div class="r"><code>GATE</code><span>Wireframe walkthrough done with client end-user — not just SPOC.</span></div>
+  </section>
+</div></section>
+
+<!-- 15 · Phase 3 divider -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 3 / TRD Setup · Steps 9–10</div>
+    <h1>How does engineering <span>pick it up?</span></h1>
+    <div class="page-meta">Failure mode prevented · dev team gets a Sol Doc that reads like marketing rather than a build contract.</div>
+  </div>
+  <section>
+    <h2>Gate Criteria <small>— Sol Doc §5.11 · §5.12 · §5.16 complete</small></h2>
+    <div class="callout accent">
+      <p><strong>Two steps in TRD Setup:</strong> Sol Doc Drafting → Sol Doc Review &amp; Sign-off. Sections 5.11 (Tech Stack), 5.12 (Security), 5.16 (List of Objects) are the TRD seeds.</p>
+    </div>
+  </section>
+</div></section>
+
+<!-- 16 · Step 9 -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 3 · TRD Setup / Step 9 of 10</div>
+    <h1>Solution Document Drafting<span>.</span></h1>
+    <div class="page-meta">Output · Filled Dhwani Sol Doc v2.0 — all 16 sections complete</div>
+  </div>
+  <section>
+    <h2>Tool + Skill <span class="badge" style="background: var(--accent-light); color: var(--accent); font-size: 8px; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 1px;">Harshdeep's recommendation</span></h2>
+    <div class="r"><code>TOOL</code><span><strong>GitHub repo</strong> + <strong>Claude CLI</strong> in Advisory + Brainstorming modes &nbsp;·&nbsp; Sol Doc as Markdown, rendered as client-facing site like this one</span></div>
+    <div class="r"><code>SKILL</code><span><strong>solution-doc-author</strong> &nbsp;·&nbsp; composite · orchestrates Steps 1–8 outputs into the 16 Sol Doc sections</span></div>
+    <div class="r"><code>VERTICALS</code><span><strong>KM:</strong> archived &nbsp;·&nbsp; <strong>DevOps:</strong> §5.11 Tech Stack feeds infra &nbsp;·&nbsp; <strong>PG:</strong> signoff workflow</span></div>
+    <div class="r"><code>GATE</code><span>§5.11 + §5.12 + §5.16 complete — these are the TRD seeds.</span></div>
+  </section>
+</div></section>
+
+<!-- 17 · Step 10 -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Phase 3 · TRD Setup / Step 10 of 10</div>
+    <h1>Sol Doc Review &amp; Sign-off<span>.</span></h1>
+    <div class="page-meta">Output · Signed Sol Doc — version-controlled, immutable archive</div>
+  </div>
+  <section>
+    <h2>Tool + Skill</h2>
+    <div class="r"><code>TOOL</code><span><strong>GitHub</strong> &nbsp;·&nbsp; free · private repos &nbsp;<em>or</em>&nbsp; <strong>SharePoint</strong> · with versioning</span></div>
+    <div class="r"><code>SKILL</code><span><strong>sol-doc-reviewer</strong> &nbsp;·&nbsp; runs 16-section gap analysis before each review</span></div>
+    <div class="r"><code>VERTICALS</code><span><strong>PG:</strong> signoff captured in version log · traceable</span></div>
+    <div class="r"><code>GATE</code><span>2 review cycles (Dhwani internal → client) before sign-off; digital signoff per Dhwani template.</span></div>
+  </section>
+</div></section>
+
+<!-- 18 · Four Stacks -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Slide 18 / Distribution</div>
+    <h1>One methodology<span>,</span> four distribution tracks<span>.</span></h1>
+    <div class="page-meta">The artefacts differ. The SDLC doesn't.</div>
+  </div>
+  <section>
+    <h2>The Four Stacks</h2>
+    <table class="stack-table">
+      <thead>
+        <tr><th>Stack</th><th>What it is</th><th>RG treatment</th><th>Distribution</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="stack-name">mGrant</td>
+          <td>Donor + CSR products</td>
+          <td>Pre-built FR templates per module · fit-gap vs existing flows</td>
+          <td><code>mgrant-stack</code> Frappe plugin</td>
+        </tr>
+        <tr>
+          <td class="stack-name">mGrant NuO</td>
+          <td>NGO-facing — sub-grants, FCRA, results, PUR</td>
+          <td>Separate FR template set · NGO personas · FCRA + LFA Sol Doc sections</td>
+          <td><code>mgrant-nuo-stack</code> plugin</td>
+        </tr>
+        <tr>
+          <td class="stack-name">Frappe</td>
+          <td>Services, customizations, <strong>mForm</strong> (offline = increment)</td>
+          <td>Generic DocType + workflow scaffolding · mForm adds offline-Flutter delta at Steps 7+8</td>
+          <td><code>frappe-build-stack</code> plugin</td>
+        </tr>
+        <tr>
+          <td class="stack-name">Non-Frappe</td>
+          <td>Greenfield — analytics, custom React/Vue/Python</td>
+          <td>No Frappe assumptions · stack picker at TRD · DD serves chosen DB</td>
+          <td>Methodology pack — Claude/Cursor skills + templates</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout" style="margin-top: 14px;">
+      <p><strong>Why mForm sits inside Frappe Stack:</strong> it's a project MIS on Frappe; the only differentiator is the offline-first Flutter app. That's a one-layer artefact increment at Steps 7 + 8 — not a new SDLC.</p>
+    </div>
+  </section>
+</div></section>
+
+<!-- 19 · Per-stack intensity -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Slide 19 / The Real Question</div>
+    <h1>Does RG need to fork per stack?<span> No.</span></h1>
+    <div class="page-meta">Same methodology · calibrated intensity per stack · the depth-dial per step is the override, not the process</div>
+  </div>
+  <section>
+    <h2>Intensity Per Step</h2>
+    <table class="stack-table">
+      <thead>
+        <tr><th>Step</th><th>mGrant</th><th>mGrant NuO</th><th>Frappe</th><th>Non-Frappe</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>1 · Kickoff</b></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">templated</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">templated</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">standard</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">standard</span></td>
+        </tr>
+        <tr>
+          <td><b>2 · Discovery + MoM</b></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">fit-gap</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">NGO personas</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">standard</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span><br><span style="font-size:11px;color:var(--text-light);">heavy</span></td>
+        </tr>
+        <tr>
+          <td><b>3 · Charter</b></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">light</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">standard</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">standard</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span><br><span style="font-size:11px;color:var(--text-light);">heavy</span></td>
+        </tr>
+        <tr>
+          <td><b>4 · FRs</b></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">fit-gap</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">config + gaps</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span><br><span style="font-size:11px;color:var(--text-light);">full</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span><br><span style="font-size:11px;color:var(--text-light);">full</span></td>
+        </tr>
+        <tr>
+          <td><b>7 · Data Model</b></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">fit-gap + ext.</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">NuO overrides</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span><br><span style="font-size:11px;color:var(--text-light);">+ mForm offline</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span><br><span style="font-size:11px;color:var(--text-light);">+ stack picker</span></td>
+        </tr>
+        <tr>
+          <td><b>9 · Sol Doc</b></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">lighter</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot"></span></span><br><span style="font-size:11px;color:var(--text-light);">+ FCRA + LFA</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span><br><span style="font-size:11px;color:var(--text-light);">full 16-section</span></td>
+          <td><span class="intensity"><span class="dot on"></span><span class="dot on"></span><span class="dot on"></span></span><br><span style="font-size:11px;color:var(--text-light);">+ stack rationale</span></td>
+        </tr>
+        <tr>
+          <td><b>Typical effort</b></td>
+          <td><b style="color:var(--accent);">~5 days</b></td>
+          <td><b style="color:var(--accent);">~2 weeks</b></td>
+          <td><b style="color:var(--accent);">~3 weeks</b></td>
+          <td><b style="color:var(--accent);">~4 weeks</b></td>
+        </tr>
+      </tbody>
+    </table>
+    <p style="margin-top: 12px; font-size: 12.5px; color: var(--text-mid);">One process. One toolset. One skills repo. The <em>depth</em> per step varies; the methodology doesn't.</p>
+  </section>
+</div></section>
+
+<!-- 20 · Tool Philosophy -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Slide 20 / Tool Philosophy</div>
+    <h1>We don't buy tools<span>.</span> We build them<span>.</span></h1>
+    <div class="page-meta">Five tools serve all ten steps. AI does the work — we only pay for what AI can't do.</div>
+  </div>
+  <section>
+    <h2>The Whole Stack</h2>
+    <table class="stack-table">
+      <thead>
+        <tr><th>Tool</th><th>Used in steps</th><th>Why this, not SaaS</th><th>Cost</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="stack-name">GitHub</td>
+          <td>1 · 3 · 4 · 5 · 7 · 9 · 10</td>
+          <td>Single source of truth · version control · web-rendered like this deck. No Notion. No Confluence. No Linear.</td>
+          <td><b style="color:var(--green);">Free</b> · private repos</td>
+        </tr>
+        <tr>
+          <td class="stack-name">Claude CLI</td>
+          <td>1 · 3 · 4 · 5 · 6 · 7 · 9 · 10</td>
+          <td>Authors, reviews, maintains every doc in the repo. Renders as a project website. Already in our hands.</td>
+          <td><b style="color:var(--green);">Already licensed</b></td>
+        </tr>
+        <tr>
+          <td class="stack-name">Mermaid</td>
+          <td>6 · 7</td>
+          <td>Markdown-native diagrams · workflows + ER. AI-friendly. No drawing tools.</td>
+          <td><b style="color:var(--green);">Free</b></td>
+        </tr>
+        <tr>
+          <td class="stack-name">Fireflies.ai</td>
+          <td>2 (MoM only)</td>
+          <td>Audio capture — the one thing AI can't fake. Transcript drops into the repo; <code>prody-mom</code> takes over.</td>
+          <td><b>Free</b> · 800 min/mo</td>
+        </tr>
+        <tr>
+          <td class="stack-name">Figma + Figma AI</td>
+          <td>8 (Wireframes)</td>
+          <td>Visual design still needs a canvas. Figma AI handles the AI-native part.</td>
+          <td><b>Free tier</b></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="callout accent" style="margin-top: 14px;">
+      <p><strong>The moat is the cost structure.</strong> Every other consultancy stacks SaaS subscriptions — Notion, Linear, Confluence, Jira, Miro, Google Workspace. We pay for <em>one</em> thing AI can't do (audio capture), and one thing AI helps with but can't replace (visual canvas). Everything else lives in a project GitHub repo, maintained by Claude CLI, rendered as a client-facing site. <strong>This deck itself is the proof — built, published, version-controlled, AI-maintained, in under 90 minutes.</strong></p>
+    </div>
+  </section>
+</div></section>
+
+<!-- 21 · What's Next -->
+<section class="slide"><div class="slide-inner">
+  <div class="page-header">
+    <div class="breadcrumb">Slide 21 / Close</div>
+    <h1>What we lock today<span>,</span> what ships after<span>.</span></h1>
+    <div class="page-meta">Today · 12:30 – 1:30 PM IST · Closing Session 2/2</div>
+  </div>
+  <section>
+    <h2>Closing</h2>
+    <div class="close-grid">
+      <div class="close-card accent">
+        <h4>Today's ask</h4>
+        <ul>
+          <li>Align on Intent → Solutioning → TRD framing</li>
+          <li>Confirm one tool + one skill per step</li>
+          <li>Confirm the four-stack overlay + calibrated intensity</li>
+          <li>Pair-wise development by team after the call</li>
+          <li>Share v1 to the larger workgroup by EoD today</li>
+        </ul>
+      </div>
+      <div class="close-card">
+        <h4>After Stage A is adopted</h4>
+        <ul>
+          <li>Stage B — SDLC Dev &amp; Testing</li>
+          <li>Stage C — SDLC Testing &amp; Performance</li>
+          <li>DevOps + Observability — Ankit</li>
+          <li>Knowledge Management — Deepak</li>
+          <li>Bi-weekly framework review · Champion role to be named</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout" style="margin-top: 16px;">
+      <p><strong>Dhwani RIS · Group PM Office · 14 May 2026 · v3</strong> &nbsp;·&nbsp; Co-authored: Nihaan Mohammed &amp; Harshdeep Singh &nbsp;·&nbsp; Day-1: 12 May 2026</p>
+    </div>
+  </section>
+</div></section>
 
 </div>
 
-<div class="controls">
-  <div class="hint">← → navigate · F fullscreen · Home/End jump · S overview</div>
+<div class="deck-controls">
+  <span>← → navigate · F fullscreen · Home/End jump</span>
   <div class="progress"><div class="bar" id="bar"></div></div>
-  <div>
-    <button id="prev">←</button>
-    <button id="next">→</button>
-  </div>
+  <button id="prev">← Prev</button>
+  <button id="next">Next →</button>
 </div>
 
 <script>
@@ -762,13 +811,15 @@
     cur.textContent = i + 1;
     bar.style.width = ((i + 1) / total * 100) + '%';
     history.replaceState(null, '', '#' + (i + 1));
+    document.querySelector('.slide.active').scrollTop = 0;
   }
 
   function next() { go(i + 1); }
   function prev() { go(i - 1); }
 
   document.addEventListener('keydown', e => {
-    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); next(); }
     else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
     else if (e.key === 'Home') { e.preventDefault(); go(0); }
     else if (e.key === 'End') { e.preventDefault(); go(total - 1); }
@@ -780,14 +831,7 @@
 
   document.getElementById('next').addEventListener('click', next);
   document.getElementById('prev').addEventListener('click', prev);
-  document.addEventListener('click', e => {
-    if (e.target.tagName === 'BUTTON' || e.target.closest('a')) return;
-    const x = e.clientX, w = window.innerWidth;
-    if (x > w * 0.7) next();
-    else if (x < w * 0.3) prev();
-  });
 
-  // initial: read hash
   const hash = parseInt((location.hash || '#1').slice(1));
   if (!isNaN(hash) && hash >= 1 && hash <= total) go(hash - 1);
   else { bar.style.width = (1 / total * 100) + '%'; }
