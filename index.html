@@ -240,6 +240,36 @@
   .close-card li { font-size: 12.5px; color: var(--text-mid); padding: 4px 0 4px 18px; position: relative; line-height: 1.5; }
   .close-card li::before { content: '→'; color: var(--accent); font-weight: 700; position: absolute; left: 0; }
 
+  /* CARD VISIBILITY OVERRIDES — bg is warm, var(--rule) is too faint */
+  .slide section {
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  }
+  .slide .phase-tile,
+  .slide .stream-tile,
+  .slide .moat-card,
+  .slide .close-card,
+  .slide .h-card,
+  .slide .meta-card {
+    border: 1px solid rgba(0, 0, 0, 0.10);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.035);
+  }
+  .slide .phase-tile { border-top: 3px solid var(--primary); }
+  .slide .stream-tile.focus {
+    border: 1px solid var(--accent);
+    box-shadow: 0 2px 12px rgba(212, 132, 42, 0.16);
+  }
+  .slide .moat-card { border-top: 3px solid var(--accent); }
+  .slide .close-card.accent {
+    border: 1px solid rgba(212, 132, 42, 0.30);
+    box-shadow: 0 2px 10px rgba(212, 132, 42, 0.10);
+  }
+  .slide .stack-table { border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 8px; overflow: hidden; }
+  .slide .stack-table th, .slide .stack-table td { border-bottom: 1px solid rgba(0, 0, 0, 0.06); }
+  .slide .callout { border-left: 3px solid var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+  .slide .callout.accent { border-left-color: var(--accent); }
+  .slide .r { border-bottom: 1px solid rgba(0, 0, 0, 0.07); }
+
   @media (max-width: 900px) {
     .streams { grid-template-columns: 1fr 1fr; }
     .phases { grid-template-columns: 1fr; }
@@ -526,7 +556,7 @@
   </div>
   <section>
     <h2>Tool + Skill <span class="badge" style="background: var(--accent-light); color: var(--accent); font-size: 8px; padding: 2px 6px; border-radius: 3px; text-transform: uppercase; letter-spacing: 1px;">Harshdeep's bundle</span></h2>
-    <div class="r"><code>TOOL</code><span><strong>Figma</strong> &nbsp;·&nbsp; free tier · + Figma AI &nbsp;<em>or</em>&nbsp; <strong>Lovable</strong></span></div>
+    <div class="r"><code>TOOL</code><span><strong>Claude CLI</strong> + <strong>base HTML/CSS</strong> in repo &nbsp;·&nbsp; rendered as live wireframes (like this deck) · version-controlled · no Figma file lock-in</span></div>
     <div class="r"><code>SKILLS</code><span><strong>frontend-design</strong> · <strong>ui-ux-master</strong> · <strong>frappe-ui-design</strong> · <strong>frappe-dashboard-design</strong> · <strong>frappe-custom-html-block</strong></span></div>
     <div class="r"><code>VERTICALS</code><span><strong>KM:</strong> PNGs archived in Sol Doc</span></div>
     <div class="r"><code>GATE</code><span>Wireframe walkthrough done with client end-user — not just SPOC.</span></div>
@@ -711,14 +741,14 @@
       <tbody>
         <tr>
           <td class="stack-name">GitHub</td>
-          <td>1 · 3 · 4 · 5 · 7 · 9 · 10</td>
-          <td>Single source of truth · version control · web-rendered like this deck. No Notion. No Confluence. No Linear.</td>
+          <td>1 · 3 · 4 · 5 · 7 · 8 · 9 · 10</td>
+          <td>Single source of truth · version control · web-rendered like this deck. No Notion. No Confluence. No Linear. No Figma file lock-in.</td>
           <td><b style="color:var(--green);">Free</b> · private repos</td>
         </tr>
         <tr>
           <td class="stack-name">Claude CLI</td>
-          <td>1 · 3 · 4 · 5 · 6 · 7 · 9 · 10</td>
-          <td>Authors, reviews, maintains every doc in the repo. Renders as a project website. Already in our hands.</td>
+          <td>1 · 3 · 4 · 5 · 6 · 7 · 8 · 9 · 10</td>
+          <td>Authors, reviews, maintains every artefact in the repo — including <strong>base HTML/CSS wireframes</strong>. Renders as a project website.</td>
           <td><b style="color:var(--green);">Already licensed</b></td>
         </tr>
         <tr>
@@ -733,16 +763,10 @@
           <td>Audio capture — the one thing AI can't fake. Transcript drops into the repo; <code>prody-mom</code> takes over.</td>
           <td><b>Free</b> · 800 min/mo</td>
         </tr>
-        <tr>
-          <td class="stack-name">Figma + Figma AI</td>
-          <td>8 (Wireframes)</td>
-          <td>Visual design still needs a canvas. Figma AI handles the AI-native part.</td>
-          <td><b>Free tier</b></td>
-        </tr>
       </tbody>
     </table>
     <div class="callout accent" style="margin-top: 14px;">
-      <p><strong>The moat is the cost structure.</strong> Every other consultancy stacks SaaS subscriptions — Notion, Linear, Confluence, Jira, Miro, Google Workspace. We pay for <em>one</em> thing AI can't do (audio capture), and one thing AI helps with but can't replace (visual canvas). Everything else lives in a project GitHub repo, maintained by Claude CLI, rendered as a client-facing site. <strong>This deck itself is the proof — built, published, version-controlled, AI-maintained, in under 90 minutes.</strong></p>
+      <p><strong>The moat is the cost structure.</strong> Every other consultancy stacks SaaS subscriptions — Notion, Linear, Confluence, Jira, Miro, Figma, Google Workspace. <strong>We pay for one thing AI can't do: audio capture.</strong> Everything else — docs, FRs, charters, wireframes, data models, workflows — lives in a project GitHub repo, authored by Claude CLI, rendered as a client-facing site. <strong>This deck itself is the proof — built, published, version-controlled, AI-maintained, in under 90 minutes.</strong></p>
     </div>
   </section>
 </div></section>
